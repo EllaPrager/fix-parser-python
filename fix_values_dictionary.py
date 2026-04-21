@@ -41,7 +41,17 @@ VALUE_MEANINGS = {
         "0": "Day",
         "1": "Good Till Cancel",
         "3": "Immediate Or Cancel",
-        "4": "Fill Or Kill",
+        "4": "Fill Or Kill"
+    },
+    
+   # OrdRejReason 
+       "103": {
+        "0": "Broker Option",
+        "1": "Unknown Symbol",
+        "2": "Exchange Closed",
+        "3": "Order Exceeds Limit",
+        "4": "Duplicate Order",
+        "5": "Stale Order"
     }
 
 }

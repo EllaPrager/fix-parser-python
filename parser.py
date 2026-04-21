@@ -88,13 +88,11 @@ Used to provide quick understanding of the order.
     # Symbol
     if "55" in paresed_fix:
         value = paresed_fix["55"]
-        meaning = get_value_meaning("55", value)
         summary["symbol"] = value
     
     # Quantity
     if "38" in paresed_fix:
         value = paresed_fix["38"]
-        meaning = get_value_meaning("38", value)
         summary["quantity"] = value
     
     # Order Type
@@ -106,7 +104,6 @@ Used to provide quick understanding of the order.
     # Price
     if "44" in paresed_fix:
         value = paresed_fix["44"]
-        meaning = get_value_meaning("44", value)
         summary["price"] = value
     
     # Order Status
@@ -118,69 +115,79 @@ Used to provide quick understanding of the order.
     # ClOrdID
     if "11" in paresed_fix:
         value = paresed_fix["11"]
-        meaning = get_value_meaning("11", value)
         summary["cl_ord_id"] = value
         
     # ExecID
     if "17" in paresed_fix:
         value = paresed_fix["17"]
-        meaning = get_value_meaning("17", value)
         summary["exec_id"] = value
 
     # Order
     if "37" in paresed_fix:
         value = paresed_fix["37"]
-        meaning = get_value_meaning("37", value)
         summary["order_id"] = value
         
     # TransactTime
     if "60" in paresed_fix:
         value = paresed_fix["60"]
-        meaning = get_value_meaning("60", value)
         summary["transact_time"] = value
     
     # TimeInForce
     if "59" in paresed_fix:
         value = paresed_fix["59"]
         meaning = get_value_meaning("59", value)
-        summary["time_in_force"] = value
+        summary["time_in_force"] = meaning
     
     # LastQty
     if "32" in paresed_fix:
         value = paresed_fix["32"]
-        meaning = get_value_meaning("32", value)
         summary["last_qty"] = value
     
     # LastPx
     if "31" in paresed_fix:
         value = paresed_fix["31"]
-        meaning = get_value_meaning("31", value)
         summary["last_price"] = value
     
     # CumQty
     if "14" in paresed_fix:
         value = paresed_fix["14"]
-        meaning = get_value_meaning("14", value)
         summary["cum_qty"] = value
     
     # LeavesQty - leaves_qty
     if "151" in paresed_fix:
         value = paresed_fix["151"]
-        meaning = get_value_meaning("151", value)
         summary["leaves_qty"] = value
     
     # SenderCompID
     if "49" in paresed_fix:
         value = paresed_fix["49"]
-        meaning = get_value_meaning("49", value)
         summary["sender_comp_id"] = value
 
     # TargetCompID
     if "56" in paresed_fix:
         value = paresed_fix["56"]
-        meaning = get_value_meaning("56", value)
         summary["target_comp_id"] = value
 
+    # orig_cl_ord_id
+    if "41" in paresed_fix:
+        value = paresed_fix["41"]
+        summary["orig_cl_ord_id"] = value
+    
+    # text
+    if "58" in paresed_fix:
+        value = paresed_fix["58"]
+        summary["text"] = value
+    
+    # sending_time
+    if "52" in paresed_fix:
+        value = paresed_fix["52"]
+        summary["sending_time"] = value
+    
+    # reject_reason
+    if "103" in paresed_fix:
+        value = paresed_fix["103"]
+        meaning = get_value_meaning("103", value)
+        summary["reject_reason"] = meaning
     return summary
 
 def validate_fix_message(parsed_fix):

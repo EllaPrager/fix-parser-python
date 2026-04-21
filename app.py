@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from parser import parse_fix_message, enrich_fix_message, generate_message_summary
+from parser import parse_fix_message, enrich_fix_message, generate_message_summary, validate_fix_message
 
 st.set_page_config(
     page_title="Tagora FIX Decoder",
@@ -22,6 +22,7 @@ if st.button("Decode"):
         st.warning("Please paste a FIX message.")
     else:
         parsed_fix = parse_fix_message(fix_input)
+        warnings = validate_fix_message(parsed_fix)
         summary = generate_message_summary(parsed_fix)
         enriched = enrich_fix_message(parsed_fix)
 
@@ -147,6 +148,20 @@ if st.button("Decode"):
         if "target_comp_id" in summary:
             target_comp_id_html = f"<b>TargetCompID:</b> {summary['target_comp_id']} <br>"
 
+        # orig_cl_ord_id
+        orig_cl_ord_id_html = "" 
+        if "orig_cl_ord_id" in summary:
+            orig_cl_ord_id = f"<b>orig_cl_ord_id:</b> {summary['orig_cl_ord_id']} <br>"
+
+        # text
+        text = "" 
+        if "text" in summary:
+            text = f"<b>text:</b> {summary['text']} <br>"
+        
+        # sending_time
+        sending_time = "" 
+        if "sending_time" in summary:
+            sending_time = f"<b>sending_time:</b> {summary['sending_time']} <br>"
 
 
         st.markdown(f"""
@@ -212,6 +227,29 @@ color:white;
 """, unsafe_allow_html=True)
 
         st.divider()
+        
+    #Validation Warnings UI
+
+        if warnings:
+            st.markdown("""
+                <div style="
+                padding:18px;
+                border-radius:12px;
+                background:#1f2937;
+                border:1px solid #374151;
+                color:white;
+                margin-bottom:20px;
+                ">
+
+                <h4 style="margin-top:0; color:#f59e0b;">
+                Validation Warnings
+                </h4>
+
+                </div>
+                """, unsafe_allow_html=True)
+            
+            for w in warnings:
+                st.warning(w)
 
         st.subheader("Decoded Fields")
         st.dataframe(df, width="stretch")
