@@ -33,7 +33,7 @@ VALUE_MEANINGS = {
         "1": "Partial Fill",
         "2": "Fill",
         "4": "Cancelled",
-        "8": "Limit"
+        "8": "Rejected"
     },
     
     # TimeInForce
@@ -51,7 +51,7 @@ VALUE_MEANINGS = {
         "2": "Exchange Closed",
         "3": "Order Exceeds Limit",
         "4": "Duplicate Order",
-        "5": "Stale Order"
+        "8": "Stale Order"
     }
 
 }

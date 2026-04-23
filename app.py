@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 
-from parser import parse_fix_message, enrich_fix_message, generate_message_summary, validate_fix_message
+from validator import validate_fix_message
+from enricher import enrich_fix_message
+from summary import generate_message_summary
+from parser import parse_fix_message
 
 st.set_page_config(
     page_title="Tagora FIX Decoder",
@@ -48,6 +51,23 @@ if st.button("Decode"):
             side_color = "#ef4444"
 
         # build html only for existing fields
+
+        # BeginString
+        begin_string_html = ""
+        if "begin_string" in summary:
+            begin_string_html = f"<b>BeginString:</b> {summary['begin_string']} <br>"
+
+        # BodyLength
+        body_length_html = ""
+        if "body_length" in summary:
+            body_length_html = f"<b>BodyLength:</b> {summary['body_length']} <br>"
+
+        # MsgSeqNum
+        msg_seq_num_html = ""
+        if "msg_seq_num" in summary:
+            msg_seq_num_html = f"<b>MsgSeqNum:</b> {summary['msg_seq_num']} <br>"
+
+
         msg_type_html = ""
         if "message_type" in summary:
             msg_type_html = f"<b>Message Type:</b> {summary['message_type']} <br>"
@@ -106,7 +126,7 @@ if st.button("Decode"):
 
         exec_type_html = ""
         if "exec_type" in summary:
-                exec_type_html = f"<b>Execution Type:</b> {summary['exec_type']} <br>"
+            exec_type_html = f"<b>Execution Type:</b> {summary['exec_type']} <br>"
 
 
         transact_time_html = ""
@@ -151,18 +171,22 @@ if st.button("Decode"):
         # orig_cl_ord_id
         orig_cl_ord_id_html = "" 
         if "orig_cl_ord_id" in summary:
-            orig_cl_ord_id = f"<b>orig_cl_ord_id:</b> {summary['orig_cl_ord_id']} <br>"
+            orig_cl_ord_id_html = f"<b>orig_cl_ord_id:</b> {summary['orig_cl_ord_id']} <br>"
 
         # text
-        text = "" 
+        text_html = "" 
         if "text" in summary:
-            text = f"<b>text:</b> {summary['text']} <br>"
+            text_html = f"<b>text:</b> {summary['text']} <br>"
         
         # sending_time
-        sending_time = "" 
+        sending_time_html = "" 
         if "sending_time" in summary:
-            sending_time = f"<b>sending_time:</b> {summary['sending_time']} <br>"
+            sending_time_html = f"<b>sending_time:</b> {summary['sending_time']} <br>"
 
+        # CheckSum
+        check_sum_html = ""
+        if "check_sum" in summary:
+            check_sum_html = f"<b>CheckSum:</b> {summary['check_sum']} <br>"
 
         st.markdown(f"""
 <div style="
@@ -172,6 +196,15 @@ background:#0f172a;
 border:1px solid #1f2937;
 color:white;
 ">
+
+<h4>Header</h4>
+{begin_string_html}
+{body_length_html}
+{msg_seq_num_html}
+{sender_comp_id_html}
+{target_comp_id_html}
+{sending_time_html}
+<hr style="border-color:#1f2937;">
 
 <h3 style="margin-top:0;">Message Summary</h3>
 
@@ -213,15 +246,13 @@ color:white;
 
 <hr style="border-color:#1f2937;">
 
-<h4>Routing </h4>
-{sender_comp_id_html}
-{target_comp_id_html}
-
 <hr style="border-color:#1f2937;">
 
 <h4>Time </h4>
 {transact_time_html}
 
+<h4>Trailer</h4>
+{check_sum_html}
 
 </div>
 """, unsafe_allow_html=True)
@@ -250,6 +281,7 @@ color:white;
             
             for w in warnings:
                 st.warning(w)
+        
 
         st.subheader("Decoded Fields")
         st.dataframe(df, width="stretch")
