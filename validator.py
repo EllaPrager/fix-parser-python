@@ -1,3 +1,7 @@
+from validation_rules import (
+    rule_limit_order_without_price,
+    rule_market_order_with_price
+)
 def validate_fix_message(parsed_fix, fix_string):
     
     warnings = []
@@ -7,6 +11,7 @@ def validate_fix_message(parsed_fix, fix_string):
     stop_price = parsed_fix.get("99")
     status = parsed_fix.get("39")
     
+
     if "55" not in parsed_fix:
         warnings.append("Missing Symbol (tag 55)")    
     
@@ -19,13 +24,22 @@ def validate_fix_message(parsed_fix, fix_string):
     if "35" not in parsed_fix:
         warnings.append("Missing Message Type (tag 35)")
     
-    # limit order must have price
-    if ord_type == "2" and not price:
-        warnings.append("Limit order without Price (tag 44)")
+    # Apply business validation rules (each rule returns a warning or None)
+
+    rules = [
+        rule_limit_order_without_price, # Limit orders must include price
+        rule_market_order_with_price    # Market order should not have price
+        
+
+    ]
+
+    for rule in rules:
+        warning = rule(parsed_fix)
+
+        if warning:
+            warnings.append(warning)
     
-    # Market order should not have price
-    if ord_type == "1" and price:
-        warnings.append("Market order should not include Price (tag 44)")
+
     
     #Stop order must have StopPx (tag 99)
     if (ord_type == "3" or ord_type == "4") and not stop_price:
@@ -66,5 +80,7 @@ def validate_fix_message(parsed_fix, fix_string):
         formatted_checksum = f"{actual_checksum:03}"
 
         if formatted_checksum != declared_checksum:
-            warnings.append("CheckSum mismatch (tag 10)")        
+            warnings.append("CheckSum mismatch (tag 10)")    
     return warnings
+
+
