@@ -1,4 +1,4 @@
-def validate_fix_message(parsed_fix):
+def validate_fix_message(parsed_fix, fix_string):
     
     warnings = []
         
@@ -39,4 +39,36 @@ def validate_fix_message(parsed_fix):
     if status == "2" and "31" not in parsed_fix:
         warnings.append("Filled order but missing LastPx (tag 31)")
 
+    # Check BodyLength
+    if "9" in parsed_fix:
+        declared_length = int(parsed_fix["9"])
+        
+        message_body = fix_string.split("35=", 1)[-1]
+        
+        message_body = message_body.split("|10=",1)[0]
+        
+        actual_length = len(message_body)
+        
+        if declared_length != actual_length:
+            warnings.append("BodyLength mismatch (tag 9)")
+    print("Declared BodyLength:", declared_length)
+    print("Actual BodyLength:", actual_length)
+    # Check CheckSum
+    if "10" in parsed_fix:
+        declared_checksum = parsed_fix["10"]
+    
+        fix_with_soh = fix_string.replace("|", "\x01")
+    
+        message_without_checksum = fix_with_soh.split("\x0110=", 1)[0]
+    
+        checksum_total = sum(bytearray(message_without_checksum, "ascii"))
+            
+        actual_checksum = checksum_total % 256
+        formatted_checksum = f"{actual_checksum:03}"
+
+        if formatted_checksum != declared_checksum:
+            warnings.append("CheckSum mismatch (tag 10)")
+    print("Declared CheckSum:", declared_checksum)
+    print("Actual CheckSum:", formatted_checksum)
+        
     return warnings
