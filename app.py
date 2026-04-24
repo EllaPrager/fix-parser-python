@@ -25,7 +25,7 @@ if st.button("Decode"):
         st.warning("Please paste a FIX message.")
     else:
         parsed_fix = parse_fix_message(fix_input)
-        warnings = validate_fix_message(parsed_fix)
+        warnings = validate_fix_message(parsed_fix, fix_input)
         summary = generate_message_summary(parsed_fix)
         enriched = enrich_fix_message(parsed_fix)
 
