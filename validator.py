@@ -51,8 +51,7 @@ def validate_fix_message(parsed_fix, fix_string):
         
         if declared_length != actual_length:
             warnings.append("BodyLength mismatch (tag 9)")
-    print("Declared BodyLength:", declared_length)
-    print("Actual BodyLength:", actual_length)
+
     # Check CheckSum
     if "10" in parsed_fix:
         declared_checksum = parsed_fix["10"]
@@ -67,8 +66,5 @@ def validate_fix_message(parsed_fix, fix_string):
         formatted_checksum = f"{actual_checksum:03}"
 
         if formatted_checksum != declared_checksum:
-            warnings.append("CheckSum mismatch (tag 10)")
-    print("Declared CheckSum:", declared_checksum)
-    print("Actual CheckSum:", formatted_checksum)
-        
+            warnings.append("CheckSum mismatch (tag 10)")        
     return warnings
