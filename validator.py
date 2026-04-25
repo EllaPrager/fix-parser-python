@@ -3,7 +3,10 @@ from validation_rules import (
     rule_market_order_with_price,
     rule_stop_order_without_stop_price,
     rule_filled_order_without_last_price,
-    rule_filled_order_without_last_qty
+    rule_filled_order_without_last_qty,
+    rule_filled_order_missing_execution_data,
+    rule_missing_order_type
+    
 )
 
 from protocol_validations import (
@@ -17,7 +20,9 @@ BUSINESS_RULES = [
     rule_market_order_with_price,           # Market orders must NOT include price (tag 44)
     rule_stop_order_without_stop_price,     # Stop orders must include StopPx (tag 99)
     rule_filled_order_without_last_price,   # Filled orders must include LastPx (tag 31)
-    rule_filled_order_without_last_qty      # Filled orders must include LastQty (tag 32)
+    rule_filled_order_without_last_qty,     # Filled orders must include LastQty (tag 32)
+    rule_filled_order_missing_execution_data,
+    rule_missing_order_type
 ]
 
 def validate_fix_message(parsed_fix, fix_string):
@@ -55,5 +60,3 @@ def validate_fix_message(parsed_fix, fix_string):
         if warning:
             warnings.append(warning)    
     return warnings
-
-

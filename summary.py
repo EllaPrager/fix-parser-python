@@ -158,8 +158,6 @@ Used to provide quick understanding of the order.
    
     return summary
 
-    
-
 if __name__ == "__main__":
     from parser import parse_fix_message
     

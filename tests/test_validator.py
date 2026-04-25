@@ -87,12 +87,19 @@ def test_validate_fix_message_filled_order_missing_last_qty():
     assert "Filled order but missing LastQty (tag 32)" in result
     
 def test_validate_fix_message_valid_message_returns_no_warnings():
-    """Verifies that a valid FIX message returns no validation warnings"""
-    fix_message = "8=FIX.4.4|9=35|35=D|49=B|56=C|11=1|55=MSFT|54=1|38=10|10=087"
+    """Verifies that a valid parsed FIX message returns no validation warnings."""
+    parsed_fix = {
+        "35": "D",
+        "40": "1",
+        "49": "B",
+        "56": "C",
+        "11": "1",
+        "55": "MSFT",
+        "54": "1",
+        "38": "10"
+    }
 
-    parsed_fix = parse_fix_message(fix_message)
-
-    result = validate_fix_message(parsed_fix, fix_message)
+    result = validate_fix_message(parsed_fix, "")
 
     assert result == []
     
@@ -111,4 +118,17 @@ def test_validate_fix_message_multiple_errors():
     assert "Missing Order Quantity (tag 38)" in result
     assert "BodyLength mismatch (tag 9)" in result
     assert "CheckSum mismatch (tag 10)" in result
+    
+
+def test_validate_fix_message_missing_order_type():
+    parsed_fix = {
+        "35": "D",
+        "54": "1",
+        "55": "EUR/USD",
+        "38": "1000000",
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Missing Order Type (tag 40)" in result
     

@@ -38,3 +38,24 @@ def rule_filled_order_without_last_qty(parsed_fix):
         return "Filled order but missing LastQty (tag 32)"
     
     return None
+
+def rule_missing_order_type(parsed_fix):
+    if "40" not in parsed_fix:
+        return "Missing Order Type (tag 40)"
+    return None
+
+def rule_execution_report_missing_status(parsed_fix):
+    msg_type = parsed_fix.get("35")
+    status = parsed_fix.get("39")
+
+    if msg_type == "8" and not status:
+        return "Execution Report missing Order Status (tag 39)"
+    return None
+
+def rule_filled_order_missing_execution_data(parsed_fix):
+    status = parsed_fix.get("39")
+
+    if status == "2":
+        if "31" not in parsed_fix and "32" not in parsed_fix:
+            return "Filled order missing execution data (LastPx & LastQty)"
+    return None
