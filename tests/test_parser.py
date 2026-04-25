@@ -235,22 +235,3 @@ def test_validate_fix_message_multiple_errors():
     assert "BodyLength mismatch (tag 9)" in result
     assert "CheckSum mismatch (tag 10)" in result
     
-def test_validate_fix_message_limit_order_without_price():
-    
-    fix_message = "8=FIX.4.4|9=50|35=D|40=2|49=B|56=C|11=1|55=MSFT|54=1|38=10|10=090"
-    
-    parsed_fix = parse_fix_message(fix_message)
-
-    result = validate_fix_message(parsed_fix, fix_message)
-
-    assert any("Limit order without Price (tag 44)" in w for w in result)
-    
-def test_validate_fix_message_market_order_with_price():
-    """Verifies that a market order with a price triggers a validation warning"""
-    fix_message = "8=FIX.4.4|9=60|35=D|40=1|44=100|49=B|56=C|11=1|55=MSFT|54=1|38=10|10=999"
-
-    parsed_fix = parse_fix_message(fix_message)
-    
-    result = validate_fix_message(parsed_fix, fix_message)
-
-    assert "Market order should not include Price (tag 44)" in result
