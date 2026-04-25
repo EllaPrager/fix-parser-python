@@ -145,3 +145,18 @@ def test_validate_fix_message_execution_report_missing_status():
     result = validate_fix_message(parsed_fix, "")
     
     assert "Execution Report missing Order Status (tag 39)" in result
+
+def test_validate_fix_message_filled_order_missing_execution_data():
+    """Verify that a filled order missing both LastPx and LastQty returns a combined warning."""
+
+    parsed_fix = {
+        "35": "8",
+        "39": "2",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "1000000"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Filled order missing execution data (LastPx & LastQty)" in result

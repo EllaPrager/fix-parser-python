@@ -66,3 +66,16 @@ def rule_execution_report_missing_status(parsed_fix):
     
     if msg_type == "8" and not status:
         return "Execution Report missing Order Status (tag 39)"
+
+def rule_filled_order_missing_execution_data(parsed_fix):
+    status = parsed_fix.get("39")
+    
+    if status == "2":
+        has_last_px = "31" in parsed_fix
+        has_last_qty = "32" in parsed_fix
+
+        if not has_last_px and not has_last_qty:
+            return "Filled order missing execution data (LastPx & LastQty)"
+    
+    return None
+    
