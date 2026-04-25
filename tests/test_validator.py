@@ -132,3 +132,16 @@ def test_validate_fix_message_missing_order_type():
 
     assert "Missing Order Type (tag 40)" in result
     
+def test_validate_fix_message_execution_report_missing_status():
+    """Verify that an execution report without OrdStatus returns a warning."""
+    
+    parsed_fix = {
+        "35": "8",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "1000000"
+    }
+    
+    result = validate_fix_message(parsed_fix, "")
+    
+    assert "Execution Report missing Order Status (tag 39)" in result

@@ -5,7 +5,8 @@ from validation_rules import (
     rule_filled_order_without_last_price,
     rule_filled_order_without_last_qty,
     rule_filled_order_missing_execution_data,
-    rule_missing_order_type
+    rule_missing_order_type,
+    rule_execution_report_missing_status
     
 )
 
@@ -22,7 +23,9 @@ BUSINESS_RULES = [
     rule_filled_order_without_last_price,   # Filled orders must include LastPx (tag 31)
     rule_filled_order_without_last_qty,     # Filled orders must include LastQty (tag 32)
     rule_filled_order_missing_execution_data,
-    rule_missing_order_type
+    rule_missing_order_type,
+    rule_execution_report_missing_status
+
 ]
 
 def validate_fix_message(parsed_fix, fix_string):
