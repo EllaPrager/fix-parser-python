@@ -1,5 +1,5 @@
 """
-Unit tests for FIX parser, enrichment, summary generation, and validation logic.
+Unit tests for FIX protocol-level validations (BodyLength, CheckSum).
 """
 import sys
 import os
@@ -7,8 +7,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from parser import parse_fix_message
-from enricher import enrich_fix_message
-from summary import generate_message_summary
 from validator import validate_fix_message
 
 def test_validate_fix_message_body_length_mismatch():

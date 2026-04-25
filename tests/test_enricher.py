@@ -1,3 +1,6 @@
+"""
+Unit tests for FIX message enrichment logic.
+"""
 import sys
 import os
 

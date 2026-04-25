@@ -1,5 +1,5 @@
 """
-Unit tests for FIX parser, enrichment, summary generation, and validation logic.
+Unit tests for FIX message summary generation.
 """
 import sys
 import os
