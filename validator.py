@@ -1,13 +1,12 @@
 from validation_rules import (
+    rule_filled_order_missing_execution_data,
+    rule_filled_order_without_last_price,
+    rule_filled_order_without_last_qty,
     rule_limit_order_without_price,
     rule_market_order_with_price,
     rule_stop_order_without_stop_price,
-    rule_filled_order_without_last_price,
-    rule_filled_order_without_last_qty,
-    rule_filled_order_missing_execution_data,
     rule_missing_order_type,
     rule_execution_report_missing_status,
-    rule_filled_order_missing_execution_data,
     rule_execution_report_missing_exec_type,
     rule_execution_report_missing_exec_id,
     rule_cancel_request_missing_orig_cl_ord_id,
@@ -19,21 +18,29 @@ from protocol_validations import (
     validate_checksum
 )
 
-# Business validation rules (each rule returns a warning or None)
+# Business validation rules (each rule returns a warning message or None)
 BUSINESS_RULES = [
-    rule_limit_order_without_price,         # Limit orders must include price (tag 44)
-    rule_market_order_with_price,           # Market orders must NOT include price (tag 44)
-    rule_stop_order_without_stop_price,     # Stop orders must include StopPx (tag 99)
-    rule_filled_order_without_last_price,   # Filled orders must include LastPx (tag 31)
-    rule_filled_order_without_last_qty,     # Filled orders must include LastQty (tag 32)
-    rule_filled_order_missing_execution_data,
-    rule_missing_order_type,
-    rule_execution_report_missing_status,
-    rule_filled_order_missing_execution_data,
-    rule_execution_report_missing_exec_type,
-    rule_execution_report_missing_exec_id,
-    rule_cancel_request_missing_orig_cl_ord_id,
-    rule_cancel_replace_missing_orig_cl_ord_id
+    # --- Execution data validation (highest priority) ---
+    rule_filled_order_missing_execution_data,   #If both LastPx (31) and LastQty (32) are missing → return combined warning
+    
+    # --- Partial execution data validation ---
+    rule_filled_order_without_last_price,       # If only LastPx (31) is missing 
+    rule_filled_order_without_last_qty,         # If only LastQty (32) is missing
+    
+    # --- Order validation rules ---
+    rule_limit_order_without_price,             # Limit orders (40=2) must include Price (44)
+    rule_market_order_with_price,               # Market orders (40=1) must NOT include Price (44)
+    rule_stop_order_without_stop_price,         # Stop orders (40=3/4) must include StopPx (99)
+    rule_missing_order_type,                    # Order must include OrdType (40)
+    
+    # --- Execution Report validation (35=8) ---
+    rule_execution_report_missing_status,       # Execution Report must include OrdStatus (39)
+    rule_execution_report_missing_exec_type,    # Execution Report must include ExecType (150)
+    rule_execution_report_missing_exec_id,      # Execution Report must include ExecID (17)
+    
+    # --- Cancel / Replace validation ---
+    rule_cancel_request_missing_orig_cl_ord_id,     # Cancel Request (35=F) must include OrigClOrdID (41)
+    rule_cancel_replace_missing_orig_cl_ord_id      # Cancel Replace (35=G) must include OrigClOrdID (41)
 ]
 
 def validate_fix_message(parsed_fix, fix_string):
