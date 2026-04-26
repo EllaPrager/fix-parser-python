@@ -1,13 +1,12 @@
 from validation_rules import (
+    rule_filled_order_missing_execution_data,
+    rule_filled_order_without_last_price,
+    rule_filled_order_without_last_qty,
     rule_limit_order_without_price,
     rule_market_order_with_price,
     rule_stop_order_without_stop_price,
-    rule_filled_order_without_last_price,
-    rule_filled_order_without_last_qty,
-    rule_filled_order_missing_execution_data,
     rule_missing_order_type,
     rule_execution_report_missing_status,
-    rule_filled_order_missing_execution_data,
     rule_execution_report_missing_exec_type,
     rule_execution_report_missing_exec_id,
     rule_cancel_request_missing_orig_cl_ord_id,
@@ -21,15 +20,14 @@ from protocol_validations import (
 
 # Business validation rules (each rule returns a warning or None)
 BUSINESS_RULES = [
+    rule_filled_order_missing_execution_data,
+    rule_filled_order_without_last_price,   # Filled orders must include LastPx (tag 31)
+    rule_filled_order_without_last_qty,     # Filled orders must include LastQty (tag 32)
     rule_limit_order_without_price,         # Limit orders must include price (tag 44)
     rule_market_order_with_price,           # Market orders must NOT include price (tag 44)
     rule_stop_order_without_stop_price,     # Stop orders must include StopPx (tag 99)
-    rule_filled_order_without_last_price,   # Filled orders must include LastPx (tag 31)
-    rule_filled_order_without_last_qty,     # Filled orders must include LastQty (tag 32)
-    rule_filled_order_missing_execution_data,
     rule_missing_order_type,
     rule_execution_report_missing_status,
-    rule_filled_order_missing_execution_data,
     rule_execution_report_missing_exec_type,
     rule_execution_report_missing_exec_id,
     rule_cancel_request_missing_orig_cl_ord_id,

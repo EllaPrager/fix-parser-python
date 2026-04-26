@@ -26,16 +26,24 @@ def rule_stop_order_without_stop_price(parsed_fix):
 def rule_filled_order_without_last_price(parsed_fix):
     status = parsed_fix.get("39")
     
-    if status == "2" and "31" not in parsed_fix:
-        return "Filled order but missing LastPx (tag 31)"
+    if status == "2":
+        if "31" not in parsed_fix and "32" not in parsed_fix:
+            return None
+    
+        if "31" not in parsed_fix:
+            return "Filled order but missing LastPx (tag 31)"
     
     return None
     
 def rule_filled_order_without_last_qty(parsed_fix):
     status = parsed_fix.get("39")
 
-    if status == "2" and "32" not in parsed_fix:
-        return "Filled order but missing LastQty (tag 32)"
+    if status == "2":
+        if "31" not in parsed_fix and "32" not in parsed_fix:
+            return None
+
+        if "32" not in parsed_fix:
+            return "Filled order but missing LastQty (tag 32)"
     
     return None
 

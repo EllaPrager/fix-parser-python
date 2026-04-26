@@ -75,13 +75,17 @@ def test_validate_fix_message_filled_order_missing_last_qty():
     parsed_fix = {
         "35": "8",
         "39": "2",
+        "31": "1.1050",
         "54": "1",
         "55": "EUR/USD",
-        "38": "1000000"
+        "38": "1000000",
+        "40": "1",
+        "150": "2",
+        "17": "E123"
     }
 
     fix_string = ""
-    
+
     result = validate_fix_message(parsed_fix, fix_string)
 
     assert "Filled order but missing LastQty (tag 32)" in result
@@ -263,3 +267,23 @@ def test_validate_fix_message_cancel_replace_missing_orig_cl_ord_id():
     result = validate_fix_message(parsed_fix, "")
     
     assert "Cancel Replace missing OrigClOrdID (tag 41)" in result
+    
+def test_validate_fix_message_filled_order_missing_both_fields_only_combined_warning():
+    """Verify that missing both LastPx and LastQty returns only the combined warning."""
+
+    parsed_fix = {
+        "35": "8",
+        "39": "2",
+        "150": "2",
+        "17": "E123",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100",
+        "40": "1"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Filled order missing execution data (LastPx & LastQty)" in result
+    assert "Filled order but missing LastPx (tag 31)" not in result
+    assert "Filled order but missing LastQty (tag 32)" not in result
