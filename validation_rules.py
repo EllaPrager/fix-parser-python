@@ -79,3 +79,8 @@ def rule_filled_order_missing_execution_data(parsed_fix):
     
     return None
     
+def rule_execution_report_missing_exec_type(parsed_fix):
+    if parsed_fix.get("35") == "8" and "150" not in parsed_fix:
+        return "Execution Report missing ExecType (tag 150)"
+    
+    return None
