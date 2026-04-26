@@ -216,3 +216,22 @@ def test_validate_fix_message_execution_report_missing_exec_type():
     result = validate_fix_message(parsed_fix, "")
 
     assert "Execution Report missing ExecType (tag 150)" in result
+    
+def test_validate_fix_message_execution_report_missing_exec_id():
+    """Verify that an execution report without ExecID returns a warning."""
+
+    parsed_fix = {
+        "35": "8",
+        "39": "2",
+        "150": "2",
+        "31": "1.1050",
+        "32": "100",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100",
+        "40": "1"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Execution Report missing ExecID (tag 17)" in result

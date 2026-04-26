@@ -78,6 +78,12 @@ def rule_filled_order_missing_execution_data(parsed_fix):
             return "Filled order missing execution data (LastPx & LastQty)"
     
     return None
+
+def rule_execution_report_missing_exec_id(parsed_fix):
+    if parsed_fix.get("35") == "8" and "17" not in parsed_fix:
+        return "Execution Report missing ExecID (tag 17)"
+    
+    return None
     
 def rule_execution_report_missing_exec_type(parsed_fix):
     if parsed_fix.get("35") == "8" and "150" not in parsed_fix:
