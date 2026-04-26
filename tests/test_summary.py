@@ -1,12 +1,16 @@
 """
 Unit tests for FIX message summary generation.
+
+Covers:
+- Extracting key fields from parsed FIX messages
+- Handling missing optional fields
 """
 import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from summary import generate_message_summary
-from parser import parse_fix_message
 
 def test_generate_message_summary_returns_expected_values():
     """Verify that the summary contains the expected business fields."""

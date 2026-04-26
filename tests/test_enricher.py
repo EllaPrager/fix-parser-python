@@ -1,5 +1,9 @@
 """
 Unit tests for FIX message enrichment logic.
+
+Covers:
+- Mapping FIX tags to field names
+- Adding metadata such as type and meaning
 """
 import sys
 import os

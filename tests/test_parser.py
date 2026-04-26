@@ -1,5 +1,9 @@
 """
 Unit tests for FIX message parsing logic.
+
+Covers:
+- Parsing FIX strings into dictionaries
+- Handling of trailing delimiters and edge cases
 """
 
 import sys

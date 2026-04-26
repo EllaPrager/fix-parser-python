@@ -1,5 +1,10 @@
 """
-Unit tests for FIX message validation rules.
+Unit tests for FIX message validation logic.
+
+Covers:
+- Business validation rules for orders and execution reports
+- Detection of missing required fields
+- Validation of order types, execution data, and cancel/replace flows
 """
 import sys
 import os
