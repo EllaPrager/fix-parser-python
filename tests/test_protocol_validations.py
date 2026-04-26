@@ -1,5 +1,9 @@
 """
-Unit tests for FIX protocol-level validations (BodyLength, CheckSum).
+Unit tests for FIX protocol-level validations.
+
+Covers:
+- BodyLength (tag 9) validation
+- CheckSum (tag 10) validation
 """
 import sys
 import os
