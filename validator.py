@@ -9,7 +9,8 @@ from validation_rules import (
     rule_execution_report_missing_status,
     rule_filled_order_missing_execution_data,
     rule_execution_report_missing_exec_type,
-    rule_execution_report_missing_exec_id
+    rule_execution_report_missing_exec_id,
+    rule_cancel_request_missing_orig_cl_ord_id
 )
 
 from protocol_validations import (
@@ -29,7 +30,8 @@ BUSINESS_RULES = [
     rule_execution_report_missing_status,
     rule_filled_order_missing_execution_data,
     rule_execution_report_missing_exec_type,
-    rule_execution_report_missing_exec_id
+    rule_execution_report_missing_exec_id,
+    rule_cancel_request_missing_orig_cl_ord_id
 ]
 
 def validate_fix_message(parsed_fix, fix_string):

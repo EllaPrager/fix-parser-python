@@ -235,3 +235,17 @@ def test_validate_fix_message_execution_report_missing_exec_id():
     result = validate_fix_message(parsed_fix, "")
 
     assert "Execution Report missing ExecID (tag 17)" in result
+    
+def test_validate_fix_message_cancel_request_missing_orig_cl_ord_id():
+    """Verify that a cancel request without OrigClOrdID returns a warning."""
+
+    parsed_fix = {
+        "35": "F",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Cancel Request missing OrigClOrdID (tag 41)" in result
