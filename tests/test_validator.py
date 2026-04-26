@@ -160,3 +160,106 @@ def test_validate_fix_message_filled_order_missing_execution_data():
     result = validate_fix_message(parsed_fix, "")
 
     assert "Filled order missing execution data (LastPx & LastQty)" in result
+    
+def test_validate_fix_message_filled_order_missing_last_priece():
+    """Verify that a filled order missing LastPx returns a combined warning."""
+    
+    parsed_fix = {
+        "35": "8",
+        "39": "2",
+        "32": "100",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "1000000"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Filled order but missing LastPx (tag 31)" in result
+
+
+def test_validate_fix_message_valid_execution_report_returns_no_warnings():
+    """Verify that a valid execution report returns no validation warnings."""
+
+    parsed_fix = {
+        "35": "8",
+        "150": "2",
+        "39": "2",
+        "17": "E123",
+        "31": "1.1050",
+        "32": "100",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100",
+        "40": "1"
+    }
+    
+    result = validate_fix_message(parsed_fix, "")
+    
+    assert result == []
+    
+def test_validate_fix_message_execution_report_missing_exec_type():
+    """Verify that an execution report without ExecType returns a warning."""
+
+    parsed_fix = {
+        "35": "8",
+        "39": "2",
+        "17": "E123",
+        "31": "1.1050",
+        "32": "100",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100",
+        "40": "1"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Execution Report missing ExecType (tag 150)" in result
+    
+def test_validate_fix_message_execution_report_missing_exec_id():
+    """Verify that an execution report without ExecID returns a warning."""
+
+    parsed_fix = {
+        "35": "8",
+        "39": "2",
+        "150": "2",
+        "31": "1.1050",
+        "32": "100",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100",
+        "40": "1"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Execution Report missing ExecID (tag 17)" in result
+    
+def test_validate_fix_message_cancel_request_missing_orig_cl_ord_id():
+    """Verify that a cancel request without OrigClOrdID returns a warning."""
+
+    parsed_fix = {
+        "35": "F",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100"
+    }
+
+    result = validate_fix_message(parsed_fix, "")
+
+    assert "Cancel Request missing OrigClOrdID (tag 41)" in result
+    
+def test_validate_fix_message_cancel_replace_missing_orig_cl_ord_id():
+    """Verify that a cancel/replace request without OrigClOrdID returns a warning."""
+
+    parsed_fix = {
+        "35": "G",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100"
+    }
+    
+    result = validate_fix_message(parsed_fix, "")
+    
+    assert "Cancel Replace missing OrigClOrdID (tag 41)" in result

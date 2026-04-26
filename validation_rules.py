@@ -78,4 +78,27 @@ def rule_filled_order_missing_execution_data(parsed_fix):
             return "Filled order missing execution data (LastPx & LastQty)"
     
     return None
+
+def rule_execution_report_missing_exec_id(parsed_fix):
+    if parsed_fix.get("35") == "8" and "17" not in parsed_fix:
+        return "Execution Report missing ExecID (tag 17)"
     
+    return None
+    
+def rule_execution_report_missing_exec_type(parsed_fix):
+    if parsed_fix.get("35") == "8" and "150" not in parsed_fix:
+        return "Execution Report missing ExecType (tag 150)"
+    
+    return None
+
+def rule_cancel_request_missing_orig_cl_ord_id(parsed_fix):
+    if parsed_fix.get("35") == "F" and "41" not in parsed_fix:
+        return "Cancel Request missing OrigClOrdID (tag 41)"
+    
+    return None
+
+def rule_cancel_replace_missing_orig_cl_ord_id(parsed_fix):
+    if parsed_fix.get("35") == "G" and "41" not in parsed_fix:
+        return "Cancel Replace missing OrigClOrdID (tag 41)"
+    
+    return None
