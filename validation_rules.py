@@ -96,3 +96,9 @@ def rule_cancel_request_missing_orig_cl_ord_id(parsed_fix):
         return "Cancel Request missing OrigClOrdID (tag 41)"
     
     return None
+
+def rule_cancel_replace_missing_orig_cl_ord_id(parsed_fix):
+    if parsed_fix.get("35") == "G" and "41" not in parsed_fix:
+        return "Cancel Replace missing OrigClOrdID (tag 41)"
+    
+    return None

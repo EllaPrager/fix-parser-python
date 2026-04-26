@@ -249,3 +249,17 @@ def test_validate_fix_message_cancel_request_missing_orig_cl_ord_id():
     result = validate_fix_message(parsed_fix, "")
 
     assert "Cancel Request missing OrigClOrdID (tag 41)" in result
+    
+def test_validate_fix_message_cancel_replace_missing_orig_cl_ord_id():
+    """Verify that a cancel/replace request without OrigClOrdID returns a warning."""
+
+    parsed_fix = {
+        "35": "G",
+        "55": "EUR/USD",
+        "54": "1",
+        "38": "100"
+    }
+    
+    result = validate_fix_message(parsed_fix, "")
+    
+    assert "Cancel Replace missing OrigClOrdID (tag 41)" in result
