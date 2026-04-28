@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import json
 
 from validator import validate_fix_message
 from enricher import enrich_fix_message
@@ -28,6 +29,12 @@ if st.button("Decode"):
         warnings = validate_fix_message(parsed_fix, fix_input)
         summary = generate_message_summary(parsed_fix)
         enriched = enrich_fix_message(parsed_fix)
+        
+        export_data = {
+            "parsed": parsed_fix,
+            "summary": summary,
+            "validation": warnings
+        }
 
         df = pd.DataFrame(enriched)
 
@@ -171,18 +178,18 @@ if st.button("Decode"):
         # orig_cl_ord_id
         orig_cl_ord_id_html = "" 
         if "orig_cl_ord_id" in summary:
-            orig_cl_ord_id_html = f"<b>orig_cl_ord_id:</b> {summary['orig_cl_ord_id']} <br>"
+            orig_cl_ord_id_html = f"<b>OrigClOrdID:</b> {summary['orig_cl_ord_id']} <br>"
 
         # text
         text_html = "" 
         if "text" in summary:
-            text_html = f"<b>text:</b> {summary['text']} <br>"
+            text_html = f"<b>Text:</b> {summary['text']} <br>"
         
         # sending_time
         sending_time_html = "" 
         if "sending_time" in summary:
-            sending_time_html = f"<b>sending_time:</b> {summary['sending_time']} <br>"
-
+            sending_time_html = f"<b>SendingTime:</b> {summary['sending_time']} <br>"
+            
         # CheckSum
         check_sum_html = ""
         if "check_sum" in summary:
@@ -241,9 +248,14 @@ color:white;
 
 <h4>IDs </h4>
 {cl_ord_id_html}
+{orig_cl_ord_id_html}
 {order_id_html}
 {exec_id_html}
 
+<hr style="border-color:#1f2937;">
+
+<h4>Message Text</h4>
+{text_html}
 <hr style="border-color:#1f2937;">
 
 <hr style="border-color:#1f2937;">
@@ -256,32 +268,44 @@ color:white;
 
 </div>
 """, unsafe_allow_html=True)
+        
+        # Copy Summary
+        st.subheader("Copy Summary")
+        
+        st.code(json.dumps(summary, indent=2))
 
         st.divider()
         
-    #Validation Warnings UI
-
-        if warnings:
-            st.markdown("""
-                <div style="
-                padding:18px;
-                border-radius:12px;
-                background:#1f2937;
-                border:1px solid #374151;
-                color:white;
-                margin-bottom:20px;
-                ">
-
-                <h4 style="margin-top:0; color:#f59e0b;">
-                Validation Warnings
-                </h4>
-
-                </div>
-                """, unsafe_allow_html=True)
-            
-            for w in warnings:
-                st.warning(w)
+        #Validation Warnings UI
         
+        st.subheader("Validation")
+        if warnings:
+            st.warning(f"{len(warnings)} validation warnings")
+        
+            for warning in warnings:
+                st.markdown(f"- {warning}")
+        else: 
+            st.success("No validation issues found")
+        
+        # JSON Export
+        st.subheader("Export")
+        
+        st.download_button(
+            label="Download JSON",
+            data = json.dumps(export_data, indent=2),
+            file_name="fix_message.json",
+            mime="application/json"
+        )
+        
+        # CSV Export
+        csv = df.to_csv(index=False)
+        
+        st.download_button(
+            label="Download CSV",
+            data = csv,
+            file_name = "fix_fields.csv",
+            mime = "text/csv"
+        )
 
         st.subheader("Decoded Fields")
         st.dataframe(df, width="stretch")
