@@ -268,6 +268,11 @@ color:white;
 
 </div>
 """, unsafe_allow_html=True)
+        
+        # Copy Summary
+        st.subheader("Copy Summary")
+        
+        st.code(json.dumps(summary, indent=2))
 
         st.divider()
         
@@ -290,6 +295,16 @@ color:white;
             data = json.dumps(export_data, indent=2),
             file_name="fix_message.json",
             mime="application/json"
+        )
+        
+        # CSV Export
+        csv = df.to_csv(index=False)
+        
+        st.download_button(
+            label="Download CSV",
+            data = csv,
+            file_name = "fix_fields.csv",
+            mime = "text/csv"
         )
 
         st.subheader("Decoded Fields")
