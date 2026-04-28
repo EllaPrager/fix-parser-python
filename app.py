@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import json
 
 from validator import validate_fix_message
 from enricher import enrich_fix_message
@@ -28,6 +29,12 @@ if st.button("Decode"):
         warnings = validate_fix_message(parsed_fix, fix_input)
         summary = generate_message_summary(parsed_fix)
         enriched = enrich_fix_message(parsed_fix)
+        
+        export_data = {
+            "parsed": parsed_fix,
+            "summary": summary,
+            "validation": warnings
+        }
 
         df = pd.DataFrame(enriched)
 
@@ -264,7 +271,7 @@ color:white;
 
         st.divider()
         
-    #Validation Warnings UI
+        #Validation Warnings UI
         
         st.subheader("Validation")
         if warnings:
@@ -275,6 +282,15 @@ color:white;
         else: 
             st.success("No validation issues found")
         
+        # JSON Export
+        st.subheader("Export")
+        
+        st.download_button(
+            label="Download JSON",
+            data = json.dumps(export_data, indent=2),
+            file_name="fix_message.json",
+            mime="application/json"
+        )
 
         st.subheader("Decoded Fields")
         st.dataframe(df, width="stretch")
