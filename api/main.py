@@ -3,6 +3,7 @@ from parser import parse_fix_message
 from summary import generate_message_summary
 from validator import validate_fix_message
 from log_parser import parse_fix_log
+from fastapi import HTTPException
 
 from fastapi import FastAPI
 
@@ -34,6 +35,12 @@ def decode_fix_message(request: FixMessageRequest):
 @app.post("/decode-log")
 def decode_fix_log(request: FixLogRequest):
     
+    if not request.log_text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="log_text cannot be empty"
+        )
+    
     parsed_messages = parse_fix_log(request.log_text)
     
     result = []
@@ -48,4 +55,7 @@ def decode_fix_log(request: FixLogRequest):
             "validation": validation
         })
     
-    return result
+    return {
+        "count": len(result),
+        "messages": result
+        }
