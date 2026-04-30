@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from parser import parse_fix_message
 from summary import generate_message_summary
 from validator import validate_fix_message
+from log_parser import parse_fix_log
 
 from fastapi import FastAPI
 
@@ -9,6 +10,9 @@ app = FastAPI()
 
 class FixMessageRequest(BaseModel):
     fix_message:str
+
+class FixLogRequest(BaseModel):
+    log_text: str
 
 @app.get("/")
 def root():
@@ -27,3 +31,21 @@ def decode_fix_message(request: FixMessageRequest):
         "validation": validation
     }
     
+@app.post("/decode-log")
+def decode_fix_log(request: FixLogRequest):
+    
+    parsed_messages = parse_fix_log(request.log_text)
+    
+    result = []
+    
+    for message in parsed_messages:
+        summary = generate_message_summary(message)
+        validation = validate_fix_message(message, "")
+        
+        result.append({
+            "parsed": message,
+            "summary": summary,
+            "validation": validation
+        })
+    
+    return result
