@@ -43,8 +43,7 @@ BUSINESS_RULES = [
     rule_cancel_replace_missing_orig_cl_ord_id      # Cancel Replace (35=G) must include OrigClOrdID (41)
 ]
 
-def validate_fix_message(parsed_fix, fix_string):
-    
+def validate_fix_message(parsed_fix, fix_string, delimiter="|"):    
     warnings = []    
 
     if "55" not in parsed_fix:
