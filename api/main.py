@@ -7,6 +7,7 @@ This module exposes API endpoints for:
 - Decoding a FIX log containing multiple messages
 """
 
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
@@ -18,11 +19,18 @@ from enricher import enrich_fix_message
 
 
 app = FastAPI(
-    title="Tagora FIX API",
-    description="API for decoding, summarizing, enriching, and validating FIX messages.",
+    title="FIXlens API",
+    description="API for decoding, validating, enriching, and analyzing FIX protocol messages and logs.",
     version="1.1.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1):\d+",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class FixMessageRequest(BaseModel):
     """
@@ -50,7 +58,7 @@ def root():
     Returns a simple response to confirm that the API is running.
     """
 
-    return {"message": "Tagora API is running"}
+    return {"message": "FIXlens API is running"}
 
 
 @app.post("/decode")
