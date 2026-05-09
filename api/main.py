@@ -14,12 +14,13 @@ from parser import parse_fix_message
 from summary import generate_message_summary
 from validator import validate_fix_message
 from log_parser import parse_fix_log
+from enricher import enrich_fix_message
 
 
 app = FastAPI(
     title="Tagora FIX API",
-    description="API for decoding, summarizing, and validating FIX messages.",
-    version="1.0.0"
+    description="API for decoding, summarizing, enriching, and validating FIX messages.",
+    version="1.1.0"
 )
 
 
@@ -29,6 +30,7 @@ class FixMessageRequest(BaseModel):
     """
 
     fix_message: str
+    delimiter: str = "|"
 
 
 class FixLogRequest(BaseModel):
@@ -37,6 +39,7 @@ class FixLogRequest(BaseModel):
     """
 
     log_text: str
+    delimiter: str = "|"
 
 
 @app.get("/")
@@ -53,7 +56,7 @@ def root():
 @app.post("/decode")
 def decode_fix_message(request: FixMessageRequest):
     """
-    Decode, summarize, and validate a single FIX message.
+    Decode, summarize, enrich, and validate a single FIX message.
     """
 
     if not request.fix_message.strip():
@@ -63,14 +66,27 @@ def decode_fix_message(request: FixMessageRequest):
         )
 
     fix_message = request.fix_message
+    delimiter = request.delimiter
 
-    parsed = parse_fix_message(fix_message)
+    parsed = parse_fix_message(
+        fix_message,
+        delimiter
+    )
+
     summary = generate_message_summary(parsed)
-    validation = validate_fix_message(parsed, fix_message)
+
+    enriched = enrich_fix_message(parsed)
+
+    validation = validate_fix_message(
+        parsed,
+        fix_message,
+        delimiter
+    )
 
     return {
         "parsed": parsed,
         "summary": summary,
+        "enriched": enriched,
         "validation": validation
     }
 
@@ -78,7 +94,7 @@ def decode_fix_message(request: FixMessageRequest):
 @app.post("/decode-log")
 def decode_fix_log(request: FixLogRequest):
     """
-    Decode, summarize, and validate multiple FIX messages from a log.
+    Decode, summarize, enrich, and validate multiple FIX messages from a log.
     """
 
     if not request.log_text.strip():
@@ -87,17 +103,31 @@ def decode_fix_log(request: FixLogRequest):
             detail="log_text cannot be empty"
         )
 
-    parsed_messages = parse_fix_log(request.log_text)
+    delimiter = request.delimiter
+
+    parsed_messages = parse_fix_log(
+        request.log_text,
+        delimiter
+    )
 
     results = []
 
     for message in parsed_messages:
+
         summary = generate_message_summary(message)
-        validation = validate_fix_message(message, "")
+
+        enriched = enrich_fix_message(message)
+
+        validation = validate_fix_message(
+            message,
+            "",
+            delimiter
+        )
 
         results.append({
             "parsed": message,
             "summary": summary,
+            "enriched": enriched,
             "validation": validation
         })
 
